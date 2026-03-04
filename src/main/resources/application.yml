@@ -42,6 +42,7 @@ app:
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
   rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
     login-requests-per-minute: ${RATE_LIMIT_LOGIN:10}
     refresh-requests-per-minute: ${RATE_LIMIT_REFRESH:20}
   admin:

@@ -16,3 +16,10 @@ app:
     refresh-token-expiry-ms: 604800000
   cors:
     allowed-origins: http://localhost:3000
+  rate-limit:
+    enabled: false
+    login-requests-per-minute: 1000
+    refresh-requests-per-minute: 1000
+  admin:
+    bootstrap-email:
+    bootstrap-password:

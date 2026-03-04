@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Per-IP rate limiting for auth endpoints using Bucket4j.
- * Login and refresh are the most sensitive endpoints for brute-force attacks.
+ * Disabled via app.rate-limit.enabled=false (e.g. in test profile).
  */
 @Component
 @Order(2)
@@ -43,6 +43,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        // Skip rate limiting if disabled
+        if (!properties.enabled()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String path = request.getRequestURI();
         String method = request.getMethod();
 

@@ -1,6 +1,6 @@
 # Auth Service
 
-![CI/CD](https://github.com/YOUR_USERNAME/auth-service/actions/workflows/ci-cd.yml/badge.svg)
+![CI/CD](https://github.com/gaurav-3232/auth-service/actions/workflows/ci-cd.yml/badge.svg)
 
 Production-quality Authentication & Authorization microservice built with **Spring Boot 3**, **JWT**, **PostgreSQL**, and **RBAC**.
 
@@ -29,18 +29,18 @@ Production-quality Authentication & Authorization microservice built with **Spri
 
 ## Tech Stack
 
-| Layer          | Technology                          |
-|----------------|-------------------------------------|
-| Runtime        | Java 21, Spring Boot 3.3            |
-| Security       | Spring Security, jjwt 0.12          |
-| Database       | PostgreSQL 16, Hibernate/JPA        |
-| Migrations     | Flyway                              |
-| Rate Limiting  | Bucket4j                            |
-| Observability  | Actuator, Logstash JSON encoder     |
-| Docs           | springdoc-openapi (Swagger)         |
-| Testing        | JUnit 5, Mockito, Testcontainers    |
-| CI/CD          | GitHub Actions, GHCR                |
-| Deployment     | Render (primary), AWS ECS (docs)    |
+| Layer         | Technology                       |
+| ------------- | -------------------------------- |
+| Runtime       | Java 21, Spring Boot 3.3         |
+| Security      | Spring Security, jjwt 0.12       |
+| Database      | PostgreSQL 16, Hibernate/JPA     |
+| Migrations    | Flyway                           |
+| Rate Limiting | Bucket4j                         |
+| Observability | Actuator, Logstash JSON encoder  |
+| Docs          | springdoc-openapi (Swagger)      |
+| Testing       | JUnit 5, Mockito, Testcontainers |
+| CI/CD         | GitHub Actions, GHCR             |
+| Deployment    | Render (primary), AWS ECS (docs) |
 
 ---
 
@@ -77,7 +77,7 @@ auth-service/
 ### Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/auth-service.git
+git clone https://github.com/gaurav-3232/auth-service.git
 cd auth-service
 
 # Start Postgres + API (change port if 5432 is in use)
@@ -93,6 +93,7 @@ Swagger UI: **http://localhost:8080/swagger-ui.html**
 ### Local Admin User
 
 Docker Compose automatically bootstraps an admin user:
+
 - Email: `admin@localhost.com`
 - Password: `AdminPass123!`
 
@@ -124,6 +125,7 @@ docker compose down -v    # delete database volume
 ### Auth Endpoints (public)
 
 **Register:**
+
 ```bash
 curl -s -X POST http://localhost:8080/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -131,6 +133,7 @@ curl -s -X POST http://localhost:8080/api/v1/auth/register \
 ```
 
 **Login:**
+
 ```bash
 curl -s -X POST http://localhost:8080/api/v1/auth/login \
   -H "Content-Type: application/json" \
@@ -138,6 +141,7 @@ curl -s -X POST http://localhost:8080/api/v1/auth/login \
 ```
 
 **Refresh Token:**
+
 ```bash
 curl -s -X POST http://localhost:8080/api/v1/auth/refresh \
   -H "Content-Type: application/json" \
@@ -145,6 +149,7 @@ curl -s -X POST http://localhost:8080/api/v1/auth/refresh \
 ```
 
 **Logout:**
+
 ```bash
 curl -s -X POST http://localhost:8080/api/v1/auth/logout \
   -H "Content-Type: application/json" \
@@ -154,6 +159,7 @@ curl -s -X POST http://localhost:8080/api/v1/auth/logout \
 ### User Endpoints (authenticated)
 
 **Get Current User:**
+
 ```bash
 curl -s http://localhost:8080/api/v1/users/me \
   -H "Authorization: Bearer <ACCESS_TOKEN>" | jq .
@@ -162,12 +168,14 @@ curl -s http://localhost:8080/api/v1/users/me \
 ### Admin Endpoints (ADMIN role only)
 
 **List Users (paged):**
+
 ```bash
 curl -s "http://localhost:8080/api/v1/admin/users?page=0&size=10" \
   -H "Authorization: Bearer <ADMIN_TOKEN>" | jq .
 ```
 
 **Update Role:**
+
 ```bash
 curl -s -X PATCH http://localhost:8080/api/v1/admin/users/<USER_ID>/role \
   -H "Authorization: Bearer <ADMIN_TOKEN>" \
@@ -176,6 +184,7 @@ curl -s -X PATCH http://localhost:8080/api/v1/admin/users/<USER_ID>/role \
 ```
 
 **Deactivate User:**
+
 ```bash
 curl -s -X PATCH http://localhost:8080/api/v1/admin/users/<USER_ID>/deactivate \
   -H "Authorization: Bearer <ADMIN_TOKEN>" | jq .
@@ -194,18 +203,18 @@ curl http://localhost:8080/actuator/info              # app info
 
 ## Security Design
 
-| Aspect             | Implementation                                          |
-|--------------------|--------------------------------------------------------|
-| Password storage   | BCrypt (cost 12)                                        |
-| Access token       | JWT (HS256/HS512), 15 min TTL                           |
-| Refresh token      | Random UUID, SHA-256 hashed in DB, 7 day TTL            |
-| Token rotation     | Old token revoked on use, linked via `replaced_by_token_id` |
-| Reuse detection    | Revoked token reuse -> all user tokens revoked          |
-| User enumeration   | Login returns identical error for wrong email/password  |
-| Rate limiting      | 10 login / 20 refresh requests per IP per minute        |
-| HTTP headers       | HSTS, CSP, X-Frame-Options DENY, nosniff, etc.         |
-| Correlation        | X-Request-Id on every request (auto-generated or client-sent) |
-| Deactivation       | Blocked from login/refresh, all tokens revoked          |
+| Aspect           | Implementation                                                |
+| ---------------- | ------------------------------------------------------------- |
+| Password storage | BCrypt (cost 12)                                              |
+| Access token     | JWT (HS256/HS512), 15 min TTL                                 |
+| Refresh token    | Random UUID, SHA-256 hashed in DB, 7 day TTL                  |
+| Token rotation   | Old token revoked on use, linked via `replaced_by_token_id`   |
+| Reuse detection  | Revoked token reuse -> all user tokens revoked                |
+| User enumeration | Login returns identical error for wrong email/password        |
+| Rate limiting    | 10 login / 20 refresh requests per IP per minute              |
+| HTTP headers     | HSTS, CSP, X-Frame-Options DENY, nosniff, etc.                |
+| Correlation      | X-Request-Id on every request (auto-generated or client-sent) |
+| Deactivation     | Blocked from login/refresh, all tokens revoked                |
 
 ---
 
@@ -262,6 +271,7 @@ After confirming the admin user exists, **delete** `ADMIN_BOOTSTRAP_EMAIL` and `
 ### Option B: AWS ECS Fargate (Documented Steps)
 
 #### Prerequisites
+
 - AWS CLI configured, ECR repository created
 - RDS PostgreSQL instance (or Aurora Serverless)
 - VPC with private subnets
@@ -286,33 +296,53 @@ docker push 123456789.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
   "memory": "1024",
-  "containerDefinitions": [{
-    "name": "auth-service",
-    "image": "123456789.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest",
-    "portMappings": [{"containerPort": 8080}],
-    "healthCheck": {
-      "command": ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health/liveness || exit 1"],
-      "interval": 30, "timeout": 5, "retries": 3, "startPeriod": 60
-    },
-    "environment": [
-      {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-      {"name": "CORS_ORIGINS", "value": "https://your-frontend.com"}
-    ],
-    "secrets": [
-      {"name": "DB_URL", "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-url"},
-      {"name": "DB_USERNAME", "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-user"},
-      {"name": "DB_PASSWORD", "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-pass"},
-      {"name": "JWT_SECRET", "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/jwt-secret"}
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "/ecs/auth-service",
-        "awslogs-region": "us-east-1",
-        "awslogs-stream-prefix": "ecs"
+  "containerDefinitions": [
+    {
+      "name": "auth-service",
+      "image": "123456789.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest",
+      "portMappings": [{ "containerPort": 8080 }],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/actuator/health/liveness || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        { "name": "CORS_ORIGINS", "value": "https://your-frontend.com" }
+      ],
+      "secrets": [
+        {
+          "name": "DB_URL",
+          "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-url"
+        },
+        {
+          "name": "DB_USERNAME",
+          "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-user"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/db-pass"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:ssm:us-east-1:123456789:parameter/auth-service/jwt-secret"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/auth-service",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
       }
     }
-  }]
+  ]
 }
 ```
 
@@ -332,6 +362,7 @@ aws ecs create-service \
 #### Step 4: Database Migration Strategy
 
 Flyway runs automatically on application startup. For ECS:
+
 - Migrations run when the first container starts.
 - Additional containers wait for the Flyway lock to release.
 - For zero-downtime deploys, ensure migrations are backward-compatible.
@@ -340,24 +371,24 @@ Flyway runs automatically on application startup. For ECS:
 
 ## Environment Variables Reference
 
-| Variable                    | Required | Default                  | Description                        |
-|-----------------------------|----------|--------------------------|------------------------------------|
-| `DB_URL`                    | Yes*     | `jdbc:postgresql://...`  | JDBC connection string             |
-| `DB_USERNAME`               | Yes*     | `authuser`               | Database username                  |
-| `DB_PASSWORD`               | Yes*     | `authpass`               | Database password                  |
-| `JWT_SECRET`                | Yes*     | (dev key)                | HMAC signing key (min 256 bits)    |
-| `JWT_ACCESS_EXPIRY_MS`      | No       | `900000` (15 min)        | Access token TTL                   |
-| `JWT_REFRESH_EXPIRY_MS`     | No       | `604800000` (7 days)     | Refresh token TTL                  |
-| `CORS_ORIGINS`              | Yes*     | `http://localhost:3000`  | Comma-separated allowed origins    |
-| `PORT`                      | No       | `8080`                   | Server port                        |
-| `SPRING_PROFILES_ACTIVE`    | No       | (default)                | `local` or `prod`                  |
-| `RATE_LIMIT_LOGIN`          | No       | `10`                     | Login attempts per IP per minute   |
-| `RATE_LIMIT_REFRESH`        | No       | `20`                     | Refresh attempts per IP per minute |
-| `ADMIN_BOOTSTRAP_EMAIL`     | No       | (empty)                  | First admin user email (one-time)  |
-| `ADMIN_BOOTSTRAP_PASSWORD`  | No       | (empty)                  | First admin user password (one-time)|
-| `DB_POOL_SIZE`              | No       | `10`                     | HikariCP max pool size             |
+| Variable                   | Required | Default                 | Description                          |
+| -------------------------- | -------- | ----------------------- | ------------------------------------ |
+| `DB_URL`                   | Yes\*    | `jdbc:postgresql://...` | JDBC connection string               |
+| `DB_USERNAME`              | Yes\*    | `authuser`              | Database username                    |
+| `DB_PASSWORD`              | Yes\*    | `authpass`              | Database password                    |
+| `JWT_SECRET`               | Yes\*    | (dev key)               | HMAC signing key (min 256 bits)      |
+| `JWT_ACCESS_EXPIRY_MS`     | No       | `900000` (15 min)       | Access token TTL                     |
+| `JWT_REFRESH_EXPIRY_MS`    | No       | `604800000` (7 days)    | Refresh token TTL                    |
+| `CORS_ORIGINS`             | Yes\*    | `http://localhost:3000` | Comma-separated allowed origins      |
+| `PORT`                     | No       | `8080`                  | Server port                          |
+| `SPRING_PROFILES_ACTIVE`   | No       | (default)               | `local` or `prod`                    |
+| `RATE_LIMIT_LOGIN`         | No       | `10`                    | Login attempts per IP per minute     |
+| `RATE_LIMIT_REFRESH`       | No       | `20`                    | Refresh attempts per IP per minute   |
+| `ADMIN_BOOTSTRAP_EMAIL`    | No       | (empty)                 | First admin user email (one-time)    |
+| `ADMIN_BOOTSTRAP_PASSWORD` | No       | (empty)                 | First admin user password (one-time) |
+| `DB_POOL_SIZE`             | No       | `10`                    | HikariCP max pool size               |
 
-*Required in production — defaults are for local dev only.
+\*Required in production — defaults are for local dev only.
 
 ---
 
@@ -400,7 +431,7 @@ FlywayException: Validate failed: Migration checksum mismatch
 ### Rate Limit Hit (429)
 
 ```json
-{"title":"Too Many Requests","status":429}
+{ "title": "Too Many Requests", "status": 429 }
 ```
 
 **Fix:** Wait 60 seconds. If testing, increase `RATE_LIMIT_LOGIN` / `RATE_LIMIT_REFRESH` env vars. In production, this protects against brute-force attacks — do not disable.

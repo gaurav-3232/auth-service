@@ -44,12 +44,18 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'maven'
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
 
       - name: Run unit tests
         run: ./mvnw test -B
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
 
       - name: Run integration tests
         run: ./mvnw verify -B -DskipUnitTests=true

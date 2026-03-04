@@ -118,8 +118,15 @@ jobs:
 
     steps:
       - name: Trigger Render Deploy
+        continue-on-error: true
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{}' \
-            --fail --silent --show-error
+          if [ -n "$DEPLOY_URL" ]; then
+            curl -X POST "$DEPLOY_URL" \
+              -H "Content-Type: application/json" \
+              -d '{}' \
+              --fail --silent --show-error
+          else
+            echo "RENDER_DEPLOY_HOOK_URL not set, skipping deploy"
+          fi
+        env:
+          DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

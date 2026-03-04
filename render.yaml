@@ -1,0 +1,47 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: connect repo on Render dashboard or use `render blueprint launch`
+
+services:
+  - type: web
+    name: auth-service
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    region: oregon
+    healthCheckPath: /actuator/health/readiness
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: "8080"
+      - key: DB_URL
+        fromDatabase:
+          name: auth-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: auth-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: auth-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRY_MS
+        value: "900000"
+      - key: JWT_REFRESH_EXPIRY_MS
+        value: "604800000"
+      - key: CORS_ORIGINS
+        value: "https://your-frontend.com"
+      - key: ADMIN_BOOTSTRAP_EMAIL
+        sync: false
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        sync: false
+
+databases:
+  - name: auth-db
+    plan: starter
+    databaseName: authdb
+    user: authuser
+    region: oregon

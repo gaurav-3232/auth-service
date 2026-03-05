@@ -88,7 +88,7 @@ curl http://localhost:8080/actuator/health
 # {"status":"UP"}
 ```
 
-Swagger UI: **http://localhost:8080/swagger-ui.html**
+Swagger UI: **[http://localhost:8080/swagger-ui.html](https://auth-service-ci01.onrender.com/swagger-ui.html )**
 
 ### Local Admin User
 
